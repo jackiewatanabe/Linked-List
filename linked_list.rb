@@ -19,77 +19,260 @@ class LinkedList
   # method to add a new node with the specific data value in the linked list
   # insert the new node at the beginning of the linked list
   def insert(value)
-    puts "Not implemented"
+    node = Node.new(value)
+
+    if @head == nil
+      @head = node
+    else
+      current = @head
+      # temp = @head
+      @head = node
+      node.next = current
+    end
+      # return node
+    # puts "Not implemented"
   end
 
   # method to find if the linked list contains a node with specified value
   # returns true if found, false otherwise
   def search(value)
-    puts "Not implemented"
+    # puts "Not implemented"
+    current = @head
+
+    if current == nil
+      return false
+    end
+
+    while current != nil
+      if current.data == value
+        return true
+      end
+      current = current.next
+    end
+    return false
   end
 
   # method to return the max value in the linked list
   # returns the data value and not the node
   def find_max
-    puts "Not implemented"
+    current = @head
+    max = current
+
+    if current == nil
+      return nil
+    end
+
+    until current == nil
+      if current.data > max.data
+        max = current
+      end
+      current = current.next
+    end
+
+    return max.data
   end
 
   # method to return the min value in the linked list
   # returns the data value and not the node
   def find_min
-    puts "Not implemented"
+    current = @head
+    min = current
+
+    if current == nil
+      return nil
+    end
+
+    until current == nil
+      if current.data < min.data
+        min = current
+      end
+      current = current.next
+    end
+
+    return min.data
   end
 
   # method that returns the length of the singly linked list
   def length
-    puts "Not implemented"
+    current = @head
+    count = 0
+    if @head == nil
+      return count
+    end
+
+    until current == nil
+      count += 1
+      current = current.next
+    end
+
+    return count
+    # puts "Not implemented"
   end
 
   # method to return the value of the nth element from the beginning
   # assume indexing starts at 0 while counting to n
   def find_nth_from_beginning(n)
-    puts "Not implemented"
+    current = @head
+
+    if current == nil
+      return nil
+    end
+
+    if n == 0
+      return current.data
+    end
+
+    n.times do
+      if current.next == nil
+        return nil
+      end
+      current = current.next
+    end
+
+    return current.data
+
   end
 
   # method to insert a new node with specific data value, assuming the linked
   # list is sorted in ascending order
   def insert_ascending(value)
-    puts "Not implemented"
+    new_node = Node.new(value)
+    current = @head
+
+    if current == nil
+      @head = new_node
+      return
+    end
+
+    if current.data >= value
+      insert(value)
+      return
+    end
+
+    while current.data < value
+      if current.next == nil
+        current.next = new_node
+      elsif current.next.data > value
+        temp = current.next
+        current.next = new_node
+        new_node.next = temp
+        return
+      else
+        current = current.next
+      end
+    end
   end
 
   # method to print all the values in the linked list
   def visit
-    puts "Not implemented"
+    current = @head
+
+    until current == nil
+      puts current.data
+      current = current.next
+    end
   end
 
   # method to delete the first node found with specified value
   def delete(value)
-    puts "Not implemented"
+    current = @head
+    previous = nil
+
+    if current.data == value
+      @head = current.next
+      return
+    end
+
+    while current != nil
+      if current.next == nil
+        return false
+      elsif current.next.data == value
+        current.next = current.next.next
+      end
+      current = current.next
+    end
+    # puts "Not implemented"
   end
 
   # method to reverse the singly linked list
   # note: the nodes should be moved and not just the values in the nodes
   def reverse
-    puts "Not implemented"
+    current = @head
+    previous = nil
+
+    if current == nil
+      return nil
+    elsif current.next == nil
+      return current
+    end
+
+    while current != nil
+      temp = current.next
+      current.next = previous
+      previous = current
+      current = temp
+    end
+
+    @head = previous
   end
 
   ## Advanced Exercises
   # returns the value at the middle element in the singly linked list
   def find_middle_value
-    puts "Not implemented"
+    middle = self.length / 2
+
+    return find_nth_from_beginning(middle)
   end
 
   # find the nth node from the end and return its value
   # assume indexing starts at 0 while counting to n
   def find_nth_from_end(n)
-    puts "Not implemented"
+    current = @head
+    trailing_current = @head
+    i = 0
+
+    if current == nil
+      return nil
+    end
+
+
+    while current != nil
+      if i > n
+        trailing_current = trailing_current.next
+      end
+      i += 1
+      current = current.next
+    end
+
+    return trailing_current.data
+
   end
 
   # checks if the linked list has a cycle. A cycle exists if any node in the
   # linked list links to a node already visited.
   # returns true if a cycle is found, false otherwise.
   def has_cycle
-    puts "Not implemented"
+    current = @head
+    slow = current
+    fast = current
+    count = 0
+
+    if current == nil || current.next == nil
+      return false
+    end
+
+    while fast != nil
+      fast = fast.next
+      if count > 0 && count % 2 == 0
+        slow = slow.next
+      end
+
+      if slow == fast
+        return true
+      end
+    end
+
+    return false
   end
 
   # Creates a cycle in the linked list for testing purposes
@@ -148,7 +331,7 @@ value = my_linked_list.find_nth_from_beginning(1)
 puts "BUG: Value at index 1 should be 3 and is #{value}" if value != 3
 
 # Insert ascending
-puts "Adding 6 in ascening order."
+puts "Adding 6 in ascending order."
 my_linked_list.insert_ascending(6)
 
 # print all elements
@@ -165,7 +348,7 @@ puts "Confirming min and max values in the linked list."
 min = my_linked_list.find_min
 puts "BUG: Min value should be 1 and not #{min}" if min != 1
 max = my_linked_list.find_max
-puts "BUG: Max value should be 5 and not #{max}" if max != 6
+puts "BUG: Max value should be 6 and not #{max}" if max != 6
 
 # delete value
 puts "Deleting node with value 5 from the linked list."
@@ -189,6 +372,7 @@ puts "Confirming length of the linked list."
 my_linked_list_length = my_linked_list.length
 puts "BUG: Length should be 3 and not #{my_linked_list_length}" if my_linked_list_length != 3
 
+
 # find middle element
 puts "Confirming middle value in the linked list."
 middle = my_linked_list.find_middle_value
@@ -201,7 +385,7 @@ my_linked_list.reverse
 puts "Printing elements in the linked list:"
 my_linked_list.visit
 # verify the reversed list
-puts "Verifying the reveresed linked list by calling find_nth_from_beginning method."
+puts "Verifying the reversed linked list by calling find_nth_from_beginning method."
 value = my_linked_list.find_nth_from_beginning(2)
 puts "BUG: Value at index 2 should be 3 and is #{value}" if value != 3
 value = my_linked_list.find_nth_from_beginning(1)
@@ -217,6 +401,12 @@ value = my_linked_list.find_nth_from_end(1)
 puts "BUG: Value at index 1 from the end, should be 4 and is #{value}" if value != 4
 value = my_linked_list.find_nth_from_end(2)
 puts "BUG: Value at index 2 from the end, should be 6 and is #{value}" if value != 6
+
+# checking search function
+puts "Searching for node with value 6"
+puts "BUG: Should be true" if my_linked_list.search(6) == false
+puts "Searching for node with value 0"
+puts "BUG: should be false" if my_linked_list.search(0) == true
 
 # check for cycle
 puts "Checking the linked list for cycle."
